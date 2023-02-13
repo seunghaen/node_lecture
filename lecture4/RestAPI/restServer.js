@@ -3,6 +3,7 @@ const fs = require("fs").promises;
 const path = require("path");
 
 const users = {}; // 데이터 저장용
+comments = {};
 
 http
   .createServer(async (req, res) => {
@@ -23,6 +24,11 @@ http
             "Content-Type": "application/json; charset=utf-8",
           });
           return res.end(JSON.stringify(users));
+        } else if (req.url === "/update") {
+          res.writeHead(200, {
+            "Content-Type": "application/json; charset=utf-8",
+          });
+          res.end(JSON.stringify(comments));
         }
         // /도 /about도 /users도 아니면
         try {
@@ -44,6 +50,20 @@ http
             const { name } = JSON.parse(body);
             const id = Date.now();
             users[id] = name;
+            res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
+            res.end("등록 성공");
+          });
+        } else if (req.url === "/update") {
+          let body = "";
+          // 요청의 body를 stream 형식으로 받음
+          req.on("data", (data) => {
+            body += data;
+          });
+          // 요청의 body를 다 받은 후 실행됨
+          return req.on("end", () => {
+            const { detail } = JSON.parse(body);
+            const id = Date.now();
+            comments[id] = detail;
             res.writeHead(201, { "Content-Type": "text/plain; charset=utf-8" });
             res.end("등록 성공");
           });

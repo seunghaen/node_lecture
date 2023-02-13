@@ -46,8 +46,30 @@ async function getUser() {
     console.error(err);
   }
 }
+async function getComments() {
+  // 로딩 시 사용자 가져오는 함수
+  try {
+    const res = await axios.get("/update");
+    const comments = res.data;
+    const list = document.getElementById("list2");
+    list.innerHTML = "";
+    // 사용자마다 반복적으로 화면 표시 및 이벤트 연결
+    Object.keys(comments).map(function (key) {
+      const commnentDiv = document.createElement("div");
+      const span = document.createElement("span");
+      span.textContent = comments[key];
+
+      commnentDiv.appendChild(span);
+      list.appendChild(commnentDiv);
+      console.log(res.data);
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 window.onload = getUser; // 화면 로딩 시 getUser 호출
+window.onload = getComments;
 // 폼 제출(submit) 시 실행
 document.getElementById("form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -62,4 +84,19 @@ document.getElementById("form").addEventListener("submit", async (e) => {
     console.error(err);
   }
   e.target.username.value = "";
+});
+
+document.getElementById("form2").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const detail = e.target.com.value;
+  if (!detail) {
+    return alert("이름을 입력하세요");
+  }
+  try {
+    await axios.post("/update", { detail });
+    getComments();
+  } catch (err) {
+    console.error(err);
+  }
+  e.target.com.value = "";
 });
