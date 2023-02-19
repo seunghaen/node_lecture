@@ -55,11 +55,9 @@ http
           });
         } else if (req.url === "/update") {
           let body = "";
-          // 요청의 body를 stream 형식으로 받음
           req.on("data", (data) => {
             body += data;
           });
-          // 요청의 body를 다 받은 후 실행됨
           return req.on("end", () => {
             const { detail } = JSON.parse(body);
             const id = Date.now();
