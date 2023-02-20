@@ -11,7 +11,7 @@ app.set("view engine", "html");
 nunjucks.configure("views", {
   express: app,
   watch: true,
-});
+}); //nunjucks 사용
 sequelize
   .sync({ force: false })
   .then(() => {
