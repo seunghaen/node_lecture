@@ -1,11 +1,11 @@
 const passport = require("passport");
-const { Strategy: LocalStratege } = require("passport-local");
+const { Strategy: LocalStrategy } = require("passport-local");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
 module.exports = () => {
   passport.use(
-    new LocalStratege(
+    new LocalStrategy(
       {
         usernameField: "email", //'email' input의 form을 통해 건너온 req.body.email
         passwordField: "password", //'password' input의 form을 통해 건너온 req.body.password
