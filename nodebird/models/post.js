@@ -6,7 +6,7 @@ class Post extends Sequelize.Model {
       {
         content: {
           type: Sequelize.STRING(140),
-          allowNull: falses,
+          allowNull: false,
         },
         img: {
           type: Sequelize.STRING(200),
@@ -25,7 +25,10 @@ class Post extends Sequelize.Model {
       }
     );
   } //table 정보들 입력
-  static associate(db) {} //table들간 관계 정보들 입력
+  static associate(db) {
+    db.Post.belongsTo(db.User);
+    db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
+  } //table들간 관계 정보들 입력
 }
 
 module.exports = Post;

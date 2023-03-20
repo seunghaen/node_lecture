@@ -6,21 +6,34 @@ const nunjucks = require("nunjucks");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const PageRouter = require("./routes/page");
+const AuthRouter = require("./routes/auth");
+const { sequelize } = require("./models");
+const passport = require("passport");
 
 dotenv.config(); // process.env안에 .env 넣기
+const passportConfig = require("./passport");
 
 const app = express();
+passportConfig();
 app.set("port", process.env.PORT || 8001);
 app.set("view engine", "html");
 nunjucks.configure("views", {
   express: app,
   watch: true,
 });
+sequelize
+  .sync({ force: true })
+  .then(() => {
+    console.log("데이터베이스 연결");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public"))); //lecture/public폴더를 브라우저에서 접근가능하도록 만들어줌
-app.use(express.json()); //JSON 요청 받아주는 parser
-app.use(express.urlencoded({ extended: false })); //form 요청 받아주는 parser
+app.use(express.json()); //JSON 요청 받아주는 parser req.body를 ajax요청
+app.use(express.urlencoded({ extended: false })); //form 요청 받아주는 parser, req.body를 폼에서
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
@@ -33,8 +46,11 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/", PageRouter);
+app.use("/auth", AuthRouter);
 app.use((req, res, next) => {
   const error = new Error(`${req.method}:${req.path}가 존재하지 않습니다`);
   error.status = 404;

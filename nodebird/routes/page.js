@@ -5,6 +5,7 @@ const {
   renderMain,
   renderProfile,
 } = require("../controllers/page");
+const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 router.use((req, res, next) => {
   res.locals.user = null; //다같이 사용하는 변수, 이 변수들은 넌적스로도 넘어감
@@ -15,8 +16,8 @@ router.use((req, res, next) => {
 });
 
 router.get("/", renderMain);
-router.get("/join", renderJoin);
-router.get("/profile", renderProfile);
+router.get("/join", isNotLoggedIn, renderJoin);
+router.get("/profile", isLoggedIn, renderProfile);
 
 module.exports = router;
 //라우터의 마지막 미들웨어 함수를 컨트롤러라고 한다.

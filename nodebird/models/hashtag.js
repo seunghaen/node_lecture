@@ -9,14 +9,16 @@ class Hashtag extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         paranoid: false,
-        modelName: "Post",
-        tableName: "posts",
+        modelName: "Hashtag",
+        tableName: "hashtags",
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
       }
     );
   } //table 정보들 입력
-  static associate(db) {} //table들간 관계 정보들 입력
+  static associate(db) {
+    db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" });
+  } //table들간 관계 정보들 입력
 }
 
 module.exports = Hashtag;
