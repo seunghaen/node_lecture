@@ -3,7 +3,6 @@ const User = require("../models/user");
 exports.follow = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { id: req.user.id } });
-    console.log("user", user);
     if (user) {
       // req.user.id가 followerId, req.params.id가 followingId
       await user.addFollowing(parseInt(req.params.id, 10));

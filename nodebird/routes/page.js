@@ -4,11 +4,11 @@ const {
   renderJoin,
   renderMain,
   renderProfile,
+  searchHashtag,
 } = require("../controllers/page");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 router.use((req, res, next) => {
-  console.log("여기여기 확인", req.user);
   res.locals.user = req.user; //다같이 사용하는 변수, 이 변수들은 넌적스로도 넘어감
   res.locals.followerCount = req.user?.Followers?.length || 0;
   res.locals.followingCount = req.user?.Followings?.length || 0;
@@ -19,6 +19,7 @@ router.use((req, res, next) => {
 router.get("/", renderMain);
 router.get("/join", isNotLoggedIn, renderJoin);
 router.get("/profile", isLoggedIn, renderProfile);
+router.get("/hashtag", isLoggedIn, searchHashtag);
 
 module.exports = router;
 //라우터의 마지막 미들웨어 함수를 컨트롤러라고 한다.

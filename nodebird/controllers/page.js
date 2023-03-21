@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const HashTag = require("../models/hashtag");
 const User = require("../models/user");
 
 exports.renderProfile = (req, res) => {
@@ -21,4 +22,29 @@ exports.renderMain = async (req, res, next) => {
     title: "NodeBird",
     twits: posts,
   });
+};
+
+exports.searchHashtag = async (req, res, next) => {
+  try {
+    const query = req.query.hashtag;
+    if (!query) {
+      return res.redirect("/");
+    }
+    const hashtag = await HashTag.findOne({ where: { title: query } });
+    console.log("여기여기", hashtag);
+    let posts = [];
+    if (hashtag) {
+      posts = await hashtag.getPosts({
+        order: [["createdAt", "DESC"]],
+        include: [{ model: User, attributes: ["id", "nick"] }],
+      });
+    }
+    res.render("main", {
+      title: `${query}` || nodebird,
+      twits: posts,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };
