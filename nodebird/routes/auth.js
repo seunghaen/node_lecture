@@ -14,7 +14,6 @@ router.get(
     failureRedirect: "/?loginError=카카오로그인실패",
   }),
   (req, res) => {
-    console.log(req.user);
     res.redirect("/");
   }
 );

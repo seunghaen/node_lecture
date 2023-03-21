@@ -7,6 +7,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const PageRouter = require("./routes/page");
 const AuthRouter = require("./routes/auth");
+const PostRouter = require("./routes/post");
+const UserRouter = require("./routes/user");
 const { sequelize } = require("./models");
 const passport = require("passport");
 
@@ -22,7 +24,7 @@ nunjucks.configure("views", {
   watch: true,
 });
 sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     console.log("데이터베이스 연결");
   })
@@ -32,6 +34,7 @@ sequelize
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public"))); //lecture/public폴더를 브라우저에서 접근가능하도록 만들어줌
+app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(express.json()); //JSON 요청 받아주는 parser req.body를 ajax요청
 app.use(express.urlencoded({ extended: false })); //form 요청 받아주는 parser, req.body를 폼에서
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -51,6 +54,8 @@ app.use(passport.session());
 
 app.use("/", PageRouter);
 app.use("/auth", AuthRouter);
+app.use("/post", PostRouter);
+app.use("/user", UserRouter);
 app.use((req, res, next) => {
   const error = new Error(`${req.method}:${req.path}가 존재하지 않습니다`);
   error.status = 404;

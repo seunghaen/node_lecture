@@ -8,10 +8,11 @@ const {
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 router.use((req, res, next) => {
+  console.log("여기여기 확인", req.user);
   res.locals.user = req.user; //다같이 사용하는 변수, 이 변수들은 넌적스로도 넘어감
-  res.locals.followerCount = 0;
-  res.locals.followingCount = 0;
-  res.locals.followingIdList = [];
+  res.locals.followerCount = req.user?.Followers?.length || 0;
+  res.locals.followingCount = req.user?.Followings?.length || 0;
+  res.locals.followingIdList = req.user?.Followings?.map((f) => f.id) || [];
   next(); //이거 까먹지 말기
 });
 

@@ -9,7 +9,21 @@ module.exports = () => {
   });
   passport.deserializeUser((id, done) => {
     //브라우저 요청에서 들어온 세션쿠키의 정보를 통해 얻어낸 id로 유저를 찾아내 req.user에 User 정보를 넣는 역할
-    User.findOne({ where: { id } })
+    User.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+          as: "Followers",
+        },
+        {
+          model: User,
+          attributes: ["id", "nick"],
+          as: "Followings",
+        },
+      ],
+    })
       .then((user) => {
         done(null, user);
       })
